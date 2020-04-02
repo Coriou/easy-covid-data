@@ -14,10 +14,7 @@ Johns Hopkins' data, aggregated and enriched with data from [samayo/country-json
 
 ```json
 {
-	"sources": [
-		"https://github.com/CSSEGISandData/COVID-19",
-        ...
-	],
+	"sources": ["https://github.com/CSSEGISandData/COVID-19", "..."],
 	"lastUpdated": "2020-04-02T14:10:27.786Z",
 	"latestUpdate": "2020-04-01T22:04:58.000Z",
 	"currentCases": 932605,
@@ -38,8 +35,8 @@ Johns Hopkins' data, aggregated and enriched with data from [samayo/country-json
 				{
 					"date": "2020-01-22T00:00:00.000Z",
 					"value": 0
-                },
-                ...
+				},
+				"..."
 			],
 			"casesCurrent": 237,
 			"deaths": [
@@ -47,7 +44,7 @@ Johns Hopkins' data, aggregated and enriched with data from [samayo/country-json
 					"date": "2020-01-22T00:00:00.000Z",
 					"value": 0
 				},
-                ...
+				"..."
 			],
 			"deathsCurrent": 4,
 			"recovered": [
@@ -55,12 +52,12 @@ Johns Hopkins' data, aggregated and enriched with data from [samayo/country-json
 					"date": "2020-01-22T00:00:00.000Z",
 					"value": 0
 				},
-                ...
+				"..."
 			],
 			"recoveredCurrent": 5,
 			"latestUpdate": "2020-04-01T21:58:34.000Z"
-        },
-        ...
+		},
+		"..."
 	]
 }
 ```
@@ -71,56 +68,56 @@ Topo data from [topojson/world-atlas](https://github.com/topojson/world-atlas) e
 
 ```json
 [
-  {
-    "feature": {
-      "type": "Feature",
-      "id": "716",
-      "properties": {
-        "name": "Zimbabwe",
-        "originalName": "Zimbabwe"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [...]
-      }
-    },
-    "data": {
-      "country": "Zimbabwe",
-      "lat": -20,
-      "long": 30,
-      "countryCode": "ZW",
-      "countryISO": "716",
-      "countryCapital": "Harare",
-      "countrySurface": 390757,
-      "countryPopulation": 16529904,
-      "countryPopulationDensity": 36.58,
-      "cases": [
-        {
-          "date": "2020-01-22T00:00:00.000Z",
-          "value": 0
-        },
-        ...
-      ],
-      "casesCurrent": 8,
-      "deaths": [
-        {
-          "date": "2020-01-22T00:00:00.000Z",
-          "value": 0
-        },
-        ...
-      ],
-      "deathsCurrent": 1,
-      "recovered": [
-        {
-          "date": "2020-01-22T00:00:00.000Z",
-          "value": 0
-        },
-        ...
-      ],
-      "recoveredCurrent": 0,
-      "latestUpdate": "2020-04-01T21:58:34.000Z"
-    }
-  },
-  ...
+	{
+		"feature": {
+			"type": "Feature",
+			"id": "716",
+			"properties": {
+				"name": "Zimbabwe",
+				"originalName": "Zimbabwe"
+			},
+			"geometry": {
+				"type": "Polygon",
+				"coordinates": ["..."]
+			}
+		},
+		"data": {
+			"country": "Zimbabwe",
+			"lat": -20,
+			"long": 30,
+			"countryCode": "ZW",
+			"countryISO": "716",
+			"countryCapital": "Harare",
+			"countrySurface": 390757,
+			"countryPopulation": 16529904,
+			"countryPopulationDensity": 36.58,
+			"cases": [
+				{
+					"date": "2020-01-22T00:00:00.000Z",
+					"value": 0
+				},
+				"..."
+			],
+			"casesCurrent": 8,
+			"deaths": [
+				{
+					"date": "2020-01-22T00:00:00.000Z",
+					"value": 0
+				},
+				"..."
+			],
+			"deathsCurrent": 1,
+			"recovered": [
+				{
+					"date": "2020-01-22T00:00:00.000Z",
+					"value": 0
+				},
+				"..."
+			],
+			"recoveredCurrent": 0,
+			"latestUpdate": "2020-04-01T21:58:34.000Z"
+		}
+	},
+	"..."
 ]
 ```
