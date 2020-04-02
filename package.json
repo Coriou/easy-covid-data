@@ -1,21 +1,19 @@
 {
-	"name": "easy-covid-data",
+	"name": "@coriou/easy-covid-data",
 	"version": "0.0.1",
 	"private": false,
 	"description": "A tool to generate easy to use data related to the Covid-19 pandemic",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Coriou/easy-covid-data.git"
-	},
+	"repository": "https://github.com/Coriou/easy-covid-data.git",
 	"license": "ISC",
 	"author": "Benjamin Coriou",
 	"main": "build/main.js",
 	"scripts": {
 		"build": "backpack build",
+		"deploy": "npm publish --access public",
 		"dev": "backpack",
 		"format": "prettier --write '**/*.{js,json,md}'",
 		"lint": "eslint --ext .js src",
-		"prepublishOnly": "sort-package-json && npm run lint && npm run format"
+		"prepublishOnly": "npm run build"
 	},
 	"husky": {
 		"hooks": {
