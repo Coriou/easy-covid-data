@@ -11,7 +11,7 @@
 		"build": "backpack build",
 		"deploy": "np --no-2fa",
 		"dev": "backpack",
-		"format": "prettier --write '**/*.{js,json}' && prettier --tab-width 2 --write '**/*.md'",
+		"format": "prettier --write '**/*.{js,json}' && prettier --tab-width 2 --use-tabs false --write '**/*.md'",
 		"lint": "eslint --ext .js src",
 		"prepublishOnly": "npm run build"
 	},
@@ -22,7 +22,7 @@
 	},
 	"lint-staged": {
 		"**/*.md": [
-			"prettier --tab-width 2 --write"
+			"prettier --use-tabs false --tab-width 2 --write"
 		],
 		"**/*.{js,json}": [
 			"prettier --write"
