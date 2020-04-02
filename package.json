@@ -23,13 +23,15 @@
 		}
 	},
 	"lint-staged": {
-		"linters": {
-			"**/*.{js,json,md}": [
-				"format",
-				"lint",
-				"git add"
-			]
-		}
+		"**/*.{js,json,md}": [
+			"prettier --write",
+			"git add"
+		],
+		"**/*.{js}": [
+			"lint",
+			"git add"
+		],
+		"package.json": "sort-package-json"
 	},
 	"dependencies": {
 		"axios": "^0.19.2",
