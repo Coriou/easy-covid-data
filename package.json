@@ -31,7 +31,10 @@
 			"lint",
 			"git add"
 		],
-		"package.json": "sort-package-json"
+		"package.json": [
+			"sort-package-json",
+			"git add"
+		]
 	},
 	"dependencies": {
 		"axios": "^0.19.2",
