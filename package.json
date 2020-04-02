@@ -1,6 +1,6 @@
 {
 	"name": "@coriou/easy-covid-data",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"private": false,
 	"description": "A tool to generate easy to use data related to the Covid-19 pandemic",
 	"repository": "https://github.com/Coriou/easy-covid-data.git",
