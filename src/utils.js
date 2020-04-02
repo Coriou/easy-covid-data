@@ -190,3 +190,23 @@ export const topoData = (data) => {
 		return match ? { feature: f, data: match } : { feature: f }
 	})
 }
+
+const isDate = (date) =>
+	Object.prototype.toString.call(date) === "[object Date]"
+
+const cache = []
+export const storeInCache = (name, data) => {
+	name = String(name)
+	cache[name] = { data: data, updated: new Date() }
+}
+export const getInCache = (name, ttl) => {
+	name = String(name)
+	const c = cache[name]
+	if (!c) return false
+	if (!c.updated || !isDate(c.updated)) return false
+	if (!c.data) return false
+
+	if (new Date().getTime() - c.updated.getTime() >= ttl) return false
+
+	return c.data
+}

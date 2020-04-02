@@ -1,8 +1,27 @@
 import { DataFrame, fromCSV, Series } from "data-forge"
-import { get, mapCountryData, getLatestUpdate, topoData } from "./utils"
+import {
+	get,
+	mapCountryData,
+	getLatestUpdate,
+	topoData,
+	storeInCache,
+	getInCache,
+} from "./utils"
 
-export const getData = async () => {
-	let [cases, deaths, recovered] = await Promise.all([
+const getRawDataFromGithub = async (forceFreshData = false) => {
+	// If we're already working, wait
+	if (getInCache("isWorking", 5e3))
+		await new Promise((resolve) => setTimeout(resolve, 500))
+
+	storeInCache("isWorking", true)
+
+	// Limit to 1 request to GitHub / minute
+	if (!forceFreshData) {
+		const cache = getInCache("githubData", 60e3)
+		if (cache) return cache
+	}
+
+	const result = await Promise.all([
 		get(
 			"https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 		).catch(() => false),
@@ -13,6 +32,14 @@ export const getData = async () => {
 			"https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
 		).catch(() => false),
 	])
+
+	storeInCache("githubData", result)
+
+	return result
+}
+
+export const getData = async () => {
+	let [cases, deaths, recovered] = await getRawDataFromGithub()
 
 	if (cases) cases = fromCSV(cases)
 	if (deaths) deaths = fromCSV(deaths)
