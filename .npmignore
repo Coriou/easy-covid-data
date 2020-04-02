@@ -1,0 +1,5 @@
+src/
+.prettierrc
+.eslintrc.json
+.nvmrc
+.prettierignore
