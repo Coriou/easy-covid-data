@@ -4,6 +4,48 @@ This projects takes data from [CSSEGISandData/COVID-19](https://github.com/CSSEG
 
 This project is used in production to power a Discord bot able to rapidly give data about the current situation regarding the pandemic.
 
+## Installation
+
+`npm i @coriou/easy-covid-data` or `yarn add @coriou/easy-covid-data`
+
+## Example
+
+```js
+import { getData } from "@coriou/easy-covid-data"
+
+getData()
+	.then(({ countryData }) => {
+		const france = countryData.find(
+			(country) => country.countryCode === "FR"
+		)
+
+		console.log(france)
+	})
+	.catch(console.error)
+```
+
+Result:
+
+```json
+{
+	"country": "France",
+	"lat": 3.9339,
+	"long": -53.1258,
+	"countryCode": "FR",
+	"countryISO": "250",
+	"countryCapital": "Paris",
+	"countrySurface": 551500,
+	"countryPopulation": 64979548,
+	"countryPopulationDensity": 120.59,
+	"cases": [{ "date": "2020-01-22T00:00:00.000Z", "value": 0 }, "..."],
+	"casesCurrent": 57749,
+	"deaths": [{ "date": "2020-01-22T00:00:00.000Z", "value": 0 }, "..."],
+	"deathsCurrent": 4043,
+	"recovered": [{ "date": "2020-01-22T00:00:00.000Z", "value": 0 }, "..."],
+	"recoveredCurrent": 11053
+}
+```
+
 ## API
 
 The modules exports two methods which both take no arguments and return a promise:
