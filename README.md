@@ -15,9 +15,7 @@ import { getData } from "@coriou/easy-covid-data"
 
 getData()
 	.then(({ countryData }) => {
-		const france = countryData.find(
-			(country) => country.countryCode === "FR"
-		)
+		const france = countryData.find((country) => country.countryCode === "FR")
 
 		console.log(france)
 	})
@@ -168,5 +166,5 @@ Topo data from [topojson/world-atlas](https://github.com/topojson/world-atlas) e
 
 I maintain Github Gists with this data, you can find them and use them directly there:
 
--   **Country Data**: [`covid-19.json`](https://gist.github.com/9c1092560b251f2843d802b0b04beb87)
--   **Topo Data**: [`covid-19-topojson.json`](https://gist.github.com/201288651baee8df5fcb45f056237739)
+- **Country Data**: [`covid-19.json`](https://gist.github.com/9c1092560b251f2843d802b0b04beb87)
+- **Topo Data**: [`covid-19-topojson.json`](https://gist.github.com/201288651baee8df5fcb45f056237739)
