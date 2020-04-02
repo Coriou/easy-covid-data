@@ -121,3 +121,10 @@ Topo data from [topojson/world-atlas](https://github.com/topojson/world-atlas) e
 	"..."
 ]
 ```
+
+## Use the data directly
+
+I maintain Github Gists with this data, you can find them and use them directly there:
+
+-   **Country Data**: [`covid-19.json`](https://gist.github.com/9c1092560b251f2843d802b0b04beb87)
+-   **Topo Data**: [`covid-19-topojson.json`](https://gist.github.com/201288651baee8df5fcb45f056237739)
