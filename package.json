@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "backpack build",
 		"dev": "backpack",
-		"format": "prettier --write '**/*.{js,json}'",
+		"format": "prettier --write '**/*.{js,json,md}'",
 		"lint": "eslint --ext .js src",
 		"prepublishOnly": "sort-package-json && npm run lint && npm run format"
 	},
@@ -24,9 +24,15 @@
 		"topojson": "^3.0.2",
 		"world-atlas": "^2.0.2"
 	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run prepublishOnly"
+		}
+	},
 	"devDependencies": {
 		"backpack-core": "^0.8.4",
 		"eslint": "^6.8.0",
+		"husky": "^4.2.3",
 		"prettier": "^2.0.2",
 		"sort-package-json": "^1.40.0"
 	}
