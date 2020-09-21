@@ -12,7 +12,7 @@ import {
 const getRawDataFromGithub = async (forceFreshData = false) => {
 	// If we're already working, wait
 	if (getInCache("isWorking", 5e3))
-		await new Promise((resolve) => setTimeout(resolve, 500))
+		await new Promise(resolve => setTimeout(resolve, 500))
 
 	storeInCache("isWorking", true)
 
@@ -52,14 +52,12 @@ export const getData = async () => {
 	const groupAndSummarize = (input, name) => {
 		// Clone dataframe, just in case
 		return new DataFrame(input)
-			.select((r) => {
+			.select(r => {
 				// Match country name between GSSE & country-json package
-				const keys = Object.keys(r).filter(
-					(k) => k !== "Country/Region"
-				)
+				const keys = Object.keys(r).filter(k => k !== "Country/Region")
 
 				const cleanObj = {}
-				keys.forEach((k) => {
+				keys.forEach(k => {
 					cleanObj[k] = r[k]
 				})
 
@@ -69,25 +67,25 @@ export const getData = async () => {
 				}
 			})
 			.setIndex("Country/Region")
-			.groupBy((r) => r["Country/Region"])
-			.select((g) => {
+			.groupBy(r => r["Country/Region"])
+			.select(g => {
 				// Extract all dates
 				const dates = new Set()
-				g.forEach((grp) => {
+				g.forEach(grp => {
 					Object.keys(grp)
-						.filter((k) => k.match(/(?:[0-9]{1,2}\/?){3}/i))
-						.forEach((k) => dates.add(k))
+						.filter(k => k.match(/(?:[0-9]{1,2}\/?){3}/i))
+						.forEach(k => dates.add(k))
 				})
 
 				// Create timeseries by deflating all groups of countries
 				let timeseries = []
-				dates.forEach((d) => {
+				dates.forEach(d => {
 					timeseries.push({
 						date: new Date(`${d} UTC`).toISOString(),
-						value: g.deflate((r) => parseInt(r[d])).sum(),
+						value: g.deflate(r => parseInt(r[d])).sum(),
 					})
 				})
-				timeseries = new Series(timeseries).orderBy((r) => r.date)
+				timeseries = new Series(timeseries).orderBy(r => r.date)
 
 				// The final object returned for that row
 				const countryName = g.first()["Country/Region"]
@@ -117,7 +115,7 @@ export const getData = async () => {
 
 				// Add tests if we have the data
 				if (tests && Array.isArray(tests))
-					tests.forEach((t) => {
+					tests.forEach(t => {
 						if (t.countryCode === clean.countryCode)
 							clean.tests = t.data
 					})
@@ -139,7 +137,7 @@ export const getData = async () => {
 	// Merge all frames together (index is country, ordered by country name)
 	const countryData = cases
 		.merge(deaths, recovered, latestUpdate)
-		.orderBy((r) => r.country)
+		.orderBy(r => r.country)
 
 	const final = {
 		sources: [
@@ -150,28 +148,28 @@ export const getData = async () => {
 		lastUpdated: new Date().toISOString(),
 		latestUpdate:
 			countryData
-				.where((r) => r.latestUpdate)
-				.orderByDescending((r) => r.latestUpdate)
-				.select((r) => r.latestUpdate)
+				.where(r => r.latestUpdate)
+				.orderByDescending(r => r.latestUpdate)
+				.select(r => r.latestUpdate)
 				.head(1)
 				.toArray()[0] || false,
 		currentCases:
 			new Series(
 				countryData
-					.where((r) => r.casesCurrent)
-					.select((r) => r.casesCurrent)
+					.where(r => r.casesCurrent)
+					.select(r => r.casesCurrent)
 			).sum() || false,
 		currentDeaths:
 			new Series(
 				countryData
-					.where((r) => r.deathsCurrent)
-					.select((r) => r.deathsCurrent)
+					.where(r => r.deathsCurrent)
+					.select(r => r.deathsCurrent)
 			).sum() || false,
 		currentRecovered:
 			new Series(
 				countryData
-					.where((r) => r.recoveredCurrent)
-					.select((r) => r.recoveredCurrent)
+					.where(r => r.recoveredCurrent)
+					.select(r => r.recoveredCurrent)
 			).sum() || false,
 		countryData: countryData.toArray(),
 	}

@@ -16,16 +16,16 @@ import countryPopDensity from "country-json/src/country-by-population-density.js
 export const get = (url, options = {}) =>
 	axios
 		.get(url, options)
-		.then((resp) => resp.data)
-		.catch((err) => err)
+		.then(resp => resp.data)
+		.catch(err => err)
 
 export const mapCountryData = (input, type) => {
 	input = String(input)
 
-	const countryNameMatch = countryNameMap.find((v) => {
+	const countryNameMatch = countryNameMap.find(v => {
 		if (!Array.isArray(v.from)) v.from = [v.from]
 
-		const match = v.from.find((from) => {
+		const match = v.from.find(from => {
 			if (from instanceof RegExp) if (input.match(from)) return true
 			if (typeof from === "string") if (input === from) return true
 		})
@@ -44,39 +44,39 @@ export const mapCountryData = (input, type) => {
 			return input
 
 		case "code":
-			match = countryCodes.find((r) => r.country === input)
+			match = countryCodes.find(r => r.country === input)
 			if (match) return match.abbreviation ? match.abbreviation : false
 
 			return ""
 
 		case "iso":
-			match = countryISO.find((r) => r.country === input)
+			match = countryISO.find(r => r.country === input)
 			if (match)
 				return match.iso ? String(match.iso).padStart(3, "0") : false
 
 			return ""
 
 		case "population":
-			match = countryPopulation.find((r) => r.country === input)
+			match = countryPopulation.find(r => r.country === input)
 			if (match)
 				return match.population ? parseInt(match.population) : false
 
 			return ""
 
 		case "capital":
-			match = countryCapital.find((r) => r.country === input)
+			match = countryCapital.find(r => r.country === input)
 			if (match) return match.city ? match.city : false
 
 			return ""
 
 		case "surface":
-			match = countrySurface.find((r) => r.country === input)
+			match = countrySurface.find(r => r.country === input)
 			if (match) return match.area ? parseInt(match.area) : false
 
 			return ""
 
 		case "popdensity":
-			match = countryPopDensity.find((r) => r.country === input)
+			match = countryPopDensity.find(r => r.country === input)
 			if (match) return match.density ? parseFloat(match.density) : false
 
 			return ""
@@ -97,21 +97,21 @@ export const getLatestURL = async () => {
 	if (directoryContents)
 		return new DataFrame(directoryContents)
 			.where(
-				(row) =>
+				row =>
 					row &&
 					row.type === "file" &&
 					row.name.match(/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}\.csv$/i)
 			)
-			.select((row) => {
+			.select(row => {
 				return {
 					date: new Date(`${row.name.replace(/\.csv/i, "")} UTC`),
 					name: row.name,
 					url: row.download_url,
 				}
 			})
-			.orderByDescending((r) => r.date)
+			.orderByDescending(r => r.date)
 			.head(1)
-			.select((r) => r.url)
+			.select(r => r.url)
 			.toArray()[0]
 
 	// Return yesterday's shit otherwise
@@ -132,7 +132,7 @@ export const getLatestUpdate = async () => {
 	if (!latestUrl) return new DataFrame()
 
 	const latest = await get(latestUrl)
-		.then((csv) => fromCSV(csv))
+		.then(csv => fromCSV(csv))
 		.catch(() => false)
 
 	if (!latest) return new DataFrame()
@@ -140,14 +140,14 @@ export const getLatestUpdate = async () => {
 	return (
 		new DataFrame(
 			latest
-				.select((r) => {
+				.select(r => {
 					// Match country name between GSSE & country-json package
 					const keys = Object.keys(r).filter(
-						(k) => k !== "Country_Region"
+						k => k !== "Country_Region"
 					)
 
 					const cleanObj = {}
-					keys.forEach((k) => {
+					keys.forEach(k => {
 						cleanObj[k] = r[k]
 					})
 
@@ -157,17 +157,17 @@ export const getLatestUpdate = async () => {
 					}
 				})
 				.setIndex("Country_Region")
-				.groupBy((r) => r["Country_Region"])
-				.select((g) => {
+				.groupBy(r => r["Country_Region"])
+				.select(g => {
 					return {
 						country: g.first()["Country_Region"],
 						latestUpdate: g
-							.deflate((r) =>
+							.deflate(r =>
 								new Date(
 									`${r["Last_Update"]} UTC`
 								).toISOString()
 							)
-							.orderByDescending((d) => d)
+							.orderByDescending(d => d)
 							.head(1)
 							.toArray()[0],
 					}
@@ -176,12 +176,12 @@ export const getLatestUpdate = async () => {
 	)
 }
 
-export const topoData = (data) => {
-	return feature(countries, countries.objects.countries).features.map((f) => {
+export const topoData = data => {
+	return feature(countries, countries.objects.countries).features.map(f => {
 		const country = mapCountryData(String(f.properties.name))
 
 		const match = data.countryData.find(
-			(c) =>
+			c =>
 				mapCountryData(String(c.country)).toLowerCase() ===
 				country.toLowerCase()
 		)
@@ -193,8 +193,7 @@ export const topoData = (data) => {
 	})
 }
 
-const isDate = (date) =>
-	Object.prototype.toString.call(date) === "[object Date]"
+const isDate = date => Object.prototype.toString.call(date) === "[object Date]"
 
 const cache = []
 export const storeInCache = (name, data) => {
@@ -241,10 +240,10 @@ export const grabTestsRaw = async () => {
 
 		get(xmlLink, { responseType: "stream" })
 			.catch(reject)
-			.then((stream) => {
+			.then(stream => {
 				const xmlBuffer = []
 
-				stream.on("data", (data) => xmlBuffer.push(data))
+				stream.on("data", data => xmlBuffer.push(data))
 				stream.on("end", () => {
 					// Concat the buffer, parse the XML and convert it to CSV
 					const XLS = xlxs.read(Buffer.concat(xmlBuffer), {
@@ -266,14 +265,14 @@ export const getTests = async () => {
 	const testsRaw = fromCSV(await grabTestsRaw())
 
 	return testsRaw
-		.groupBy((r) => r["country_code"])
-		.select((r) => {
+		.groupBy(r => r["country_code"])
+		.select(r => {
 			return {
 				countryCode: r.toArray()[0]["country_code"],
 				data: r
-					.orderBy((r) => r["year_week"])
+					.orderBy(r => r["year_week"])
 					.toArray()
-					.map((c) => {
+					.map(c => {
 						const [, Y, W] = c["year_week"].match(
 							/(\d{4})-W(\d{2})/i
 						)

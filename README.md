@@ -15,7 +15,7 @@ import { getData } from "@coriou/easy-covid-data"
 
 getData()
   .then(({ countryData }) => {
-    const france = countryData.find((country) => country.countryCode === "FR")
+    const france = countryData.find(country => country.countryCode === "FR")
 
     console.log(france)
   })
