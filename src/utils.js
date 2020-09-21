@@ -2,6 +2,8 @@ import axios from "axios"
 import { DataFrame, fromCSV } from "data-forge"
 import countries from "world-atlas/countries-50m.json"
 import { feature } from "topojson"
+import xlxs from "xlsx"
+import cheerio from "cheerio"
 import countryNameMap from "./countryNameMap"
 
 import countryCodes from "country-json/src/country-by-abbreviation.json"
@@ -209,4 +211,98 @@ export const getInCache = (name, ttl) => {
 	if (new Date().getTime() - c.updated.getTime() >= ttl) return false
 
 	return c.data
+}
+
+// Parse ECDC's website to get the latest XML testing file, download it and convert it to CSV
+export const grabTestsRaw = async () => {
+	const page = await get(
+		"https://www.ecdc.europa.eu/en/publications-data/covid-19-testing"
+	).catch(() => false)
+
+	if (!page) return false
+
+	let xmlLink = false
+
+	const $ = cheerio.load(page)
+	$(".download__item")
+		.find("a")
+		.each((i, a) => {
+			if (
+				$(a)
+					.attr("type")
+					.match(/application\/vnd\.openxmlformats/)
+			)
+				xmlLink = $(a).attr("href")
+		})
+
+	return new Promise((resolve, reject) => {
+		const cache = getInCache("testsData", 60e3)
+		if (cache) return resolve(cache)
+
+		get(xmlLink, { responseType: "stream" })
+			.catch(reject)
+			.then((stream) => {
+				const xmlBuffer = []
+
+				stream.on("data", (data) => xmlBuffer.push(data))
+				stream.on("end", () => {
+					// Concat the buffer, parse the XML and convert it to CSV
+					const XLS = xlxs.read(Buffer.concat(xmlBuffer), {
+						type: "buffer",
+					})
+
+					const CSV = xlxs.utils.sheet_to_csv(
+						XLS.Sheets[XLS.SheetNames[0]]
+					)
+
+					storeInCache("testsData", CSV)
+					return resolve(CSV)
+				})
+			})
+	})
+}
+
+export const getTests = async () => {
+	const testsRaw = fromCSV(await grabTestsRaw())
+
+	return testsRaw
+		.groupBy((r) => r["country_code"])
+		.select((r) => {
+			return {
+				countryCode: r.toArray()[0]["country_code"],
+				data: r
+					.orderBy((r) => r["year_week"])
+					.toArray()
+					.map((c) => {
+						const [, Y, W] = c["year_week"].match(
+							/(\d{4})-W(\d{2})/i
+						)
+
+						return {
+							count: parseInt(c["tests_done"]),
+							lastUpdateWeek: c["year_week"],
+							lastUpdateStart: getWeekFromNumber(W, Y),
+							lastUpdateEnd: getWeekFromNumber(W, Y, true),
+						}
+					}),
+			}
+		})
+		.toArray()
+}
+
+// https://stackoverflow.com/a/16591175/10298824
+export const getWeekFromNumber = (w, y, last = false) => {
+	const simple = new Date(Date.UTC(y, 0, 1 + (w - 1) * 7))
+	const dow = simple.getDay()
+	const ISOweekStart = simple
+
+	if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1)
+	else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay())
+
+	if (last) {
+		ISOweekStart.setDate(ISOweekStart.getDate() + 7)
+		ISOweekStart.setSeconds(ISOweekStart.getSeconds() + -1)
+	}
+
+	return ISOweekStart
 }

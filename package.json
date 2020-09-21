@@ -36,10 +36,12 @@
 	},
 	"dependencies": {
 		"axios": "^0.20.0",
+		"cheerio": "^1.0.0-rc.3",
 		"country-json": "^1.1.0",
 		"data-forge": "^1.8.11",
 		"topojson": "^3.0.2",
-		"world-atlas": "^2.0.2"
+		"world-atlas": "^2.0.2",
+		"xlsx": "^0.16.7"
 	},
 	"devDependencies": {
 		"backpack-core": "^0.8.4",

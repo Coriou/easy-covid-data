@@ -6,6 +6,7 @@ import {
 	topoData,
 	storeInCache,
 	getInCache,
+	getTests,
 } from "./utils"
 
 const getRawDataFromGithub = async (forceFreshData = false) => {
@@ -44,6 +45,8 @@ export const getData = async () => {
 	if (cases) cases = fromCSV(cases)
 	if (deaths) deaths = fromCSV(deaths)
 	if (recovered) recovered = fromCSV(recovered)
+
+	const tests = await getTests()
 
 	// Takes a row dataframe and will return a single one, grouped by countries and deflated values
 	const groupAndSummarize = (input, name) => {
@@ -112,6 +115,13 @@ export const getData = async () => {
 				// Add the current (latest) value for that country & series
 				clean[`${name}Current`] = timeseries.last().value || 0
 
+				// Add tests if we have the data
+				if (tests && Array.isArray(tests))
+					tests.forEach((t) => {
+						if (t.countryCode === clean.countryCode)
+							clean.tests = t.data
+					})
+
 				return clean
 			})
 			.inflate()
@@ -135,6 +145,7 @@ export const getData = async () => {
 		sources: [
 			"https://github.com/CSSEGISandData/COVID-19",
 			"https://github.com/samayo/country-json",
+			"https://www.ecdc.europa.eu/en/publications-data/covid-19-testing",
 		],
 		lastUpdated: new Date().toISOString(),
 		latestUpdate:
