@@ -15,7 +15,19 @@ import countryPopDensity from "country-json/src/country-by-population-density.js
 
 export const get = (url, options = {}) =>
 	axios
-		.get(url, options)
+		.get(
+			url,
+			Object.assign(
+				{},
+				{
+					headers: {
+						"User-Agent":
+							"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+					},
+				},
+				options
+			)
+		)
 		.then(resp => resp.data)
 		.catch(err => err)
 
