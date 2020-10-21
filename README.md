@@ -3,7 +3,6 @@
 ![npm](https://img.shields.io/npm/dy/@coriou/easy-covid-data?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/coriou/easy-covid-data?style=for-the-badge)
 ![npm (scoped)](https://img.shields.io/npm/v/@coriou/easy-covid-data?style=for-the-badge)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/y/coriou/easy-covid-data?style=for-the-badge)
 
 This projects takes data from [CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19), parses it and returns it in a much friendlier format.
 
