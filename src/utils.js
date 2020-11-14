@@ -2,8 +2,6 @@ import axios from "axios"
 import { DataFrame, fromCSV } from "data-forge"
 import countries from "world-atlas/countries-50m.json"
 import { feature } from "topojson"
-import xlxs from "xlsx"
-import cheerio from "cheerio"
 import countryNameMap from "./countryNameMap"
 
 import countryCodes from "country-json/src/country-by-abbreviation.json"
@@ -29,7 +27,6 @@ export const get = (url, options = {}) =>
 			)
 		)
 		.then(resp => resp.data)
-		.catch(err => err)
 
 export const mapCountryData = (input, type) => {
 	input = String(input)
@@ -224,57 +221,15 @@ export const getInCache = (name, ttl) => {
 	return c.data
 }
 
-// Parse ECDC's website to get the latest XML testing file, download it and convert it to CSV
-export const grabTestsRaw = async () => {
-	const page = await get(
-		"https://www.ecdc.europa.eu/en/publications-data/covid-19-testing"
-	).catch(() => false)
-
-	if (!page) return false
-
-	let xmlLink = false
-
-	const $ = cheerio.load(page)
-	$(".download__item")
-		.find("a")
-		.each((i, a) => {
-			if (
-				$(a)
-					.attr("type")
-					.match(/application\/vnd\.openxmlformats/)
-			)
-				xmlLink = $(a).attr("href")
-		})
-
-	return new Promise((resolve, reject) => {
-		const cache = getInCache("testsData", 60e3)
-		if (cache) return resolve(cache)
-
-		get(xmlLink, { responseType: "stream" })
-			.catch(reject)
-			.then(stream => {
-				const xmlBuffer = []
-
-				stream.on("data", data => xmlBuffer.push(data))
-				stream.on("end", () => {
-					// Concat the buffer, parse the XML and convert it to CSV
-					const XLS = xlxs.read(Buffer.concat(xmlBuffer), {
-						type: "buffer",
-					})
-
-					const CSV = xlxs.utils.sheet_to_csv(
-						XLS.Sheets[XLS.SheetNames[0]]
-					)
-
-					storeInCache("testsData", CSV)
-					return resolve(CSV)
-				})
-			})
-	})
-}
-
 export const getTests = async () => {
-	const testsRaw = fromCSV(await grabTestsRaw())
+	const testsRaw = new DataFrame(
+		await get(
+			"https://opendata.ecdc.europa.eu/covid19/testing/json/"
+		).catch(err => {
+			console.log(err)
+			return []
+		})
+	)
 
 	return testsRaw
 		.groupBy(r => r["country_code"])
